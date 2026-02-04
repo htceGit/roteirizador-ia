@@ -384,8 +384,7 @@
                 return;
             }
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
+
             const amount = parseFloat(document.getElementById('amount').value);
             const minRequired = currentMaxBid > 0 ? currentMaxBid + 50 : MINIMUM_BID_START;
 
@@ -400,7 +399,7 @@
 
             const { data, error } = await supabaseClient
                 .from('bids')
-                .insert([{ name, email, amount }]);
+                .insert([{ amount }]);
 
             if (error) {
                 showFeedback('Erro ao registrar lance: ' + error.message, 'error');
