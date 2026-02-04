@@ -319,7 +319,7 @@
 
             const { data, error } = await supabaseClient
                 .from('bids')
-                .select('*')
+                .select('id, amount, created_at')
                 .order('amount', { ascending: false })
                 .limit(5);
 
