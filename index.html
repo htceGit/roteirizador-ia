@@ -191,6 +191,37 @@
                     <div id="feedback" class="mt-4 text-center text-sm hidden"></div>
                 </div>
             </div>
+
+            <!-- Live Feed / Leaderboard -->
+            <div class="mt-20 max-w-3xl mx-auto">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-list-ol text-brand-accent mr-3"></i> Top 5 Maiores Lances
+                </h3>
+                <div class="bg-gray-800/40 rounded-xl overflow-hidden border border-gray-700">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-900/50 text-gray-400 text-xs uppercase">
+                                <tr>
+                                    <th class="px-6 py-4">Usuário</th>
+                                    <th class="px-6 py-4">Data</th>
+                                    <th class="px-6 py-4 text-right">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body" class="divide-y divide-gray-700/50">
+                                <!-- Lances serão inseridos aqui via JS -->
+                                <tr>
+                                    <td colspan="3" class="px-6 py-8 text-center text-gray-500 italic">
+                                        Carregando lances...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p class="text-center text-xs text-gray-500 mt-4">
+                    * Os e-mails são protegidos e mascarados diretamente no servidor.
+                </p>
+            </div>
         </div>
     </main>
 
@@ -212,14 +243,12 @@
         const SUPABASE_URL = 'https://fipjivizuuuhlzpcewzw.supabase.co'; 
         const SUPABASE_KEY = 'sb_publishable_2YSikUkRJnroTR1XKCMG1A_y574et2s';
         
-        // CORREÇÃO: Renomeada variável para não conflitar com o global 'supabase' do CDN
         let supabaseClient;
 
         try {
             if(SUPABASE_URL === 'SUA_URL_SUPABASE_AQUI') {
                 console.warn("Configure as chaves do Supabase no código HTML.");
             } else {
-                // Acessa o objeto global 'supabase' fornecido pelo CDN
                 if (window.supabase) {
                     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 } else {
@@ -231,7 +260,6 @@
         }
 
         // --- CONFIGURAÇÃO LEILÃO ---
-        // Datas definidas: Início em 1 Jan 2026, Fim em 1 Mar 2026 às 16:00
         const auctionStartDate = new Date('January 01, 2026 00:00:00').getTime();
         const auctionEndDate = new Date('March 01, 2026 16:00:00').getTime(); 
         const MINIMUM_BID_START = 500;
@@ -257,33 +285,14 @@
             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
         });
 
-        function maskEmail(email) {
-            try {
-                const parts = email.split('@');
-                if (parts.length < 2) return email;
-                const name = parts[0];
-                const domain = parts[1];
-                
-                const maskedName = name.substring(0, 3);
-                const maskedDomain = domain.substring(0, 3);
-                
-                return `${maskedName}***@${maskedDomain}...`;
-            } catch (e) {
-                return '***@***...';
-            }
-        }
-
         // --- COUNTDOWN E PROGRESS BAR ---
         const countdownTimer = setInterval(function() {
             const now = new Date().getTime();
             const distance = auctionEndDate - now;
-
-            // Lógica da Barra de Progresso
             const totalDuration = auctionEndDate - auctionStartDate;
             const elapsed = now - auctionStartDate;
             let percentage = (elapsed / totalDuration) * 100;
             
-            // Limites da barra (0% a 100%)
             percentage = Math.max(0, Math.min(100, percentage));
             if (progressBar) {
                 progressBar.style.width = percentage + "%";
@@ -295,7 +304,6 @@
                 document.getElementById("status-badge").className = "flex items-center px-3 py-1 rounded-full bg-gray-700 text-gray-300 text-xs font-bold border border-gray-600";
                 form.innerHTML = '<div class="text-center p-6 bg-gray-800 rounded text-gray-300">O leilão foi encerrado.</div>';
                 
-                // Zera contador visualmente
                 ['days', 'hours', 'minutes', 'seconds'].forEach(id => document.getElementById(id).innerText = "00");
                 if (progressBar) progressBar.style.width = "100%";
                 return;
@@ -312,16 +320,13 @@
             document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
         }, 1000);
 
-        // --- SUPABASE LOGIC --
+        // --- SUPABASE LOGIC (SECURE) ---
 
         async function fetchBids() {
             if (!supabaseClient) return;
 
-            const { data, error } = await supabaseClient
-                .from('bids')
-                .select('id, amount, created_at')
-                .order('amount', { ascending: false })
-                .limit(5);
+            // Mudança: Chamada RPC em vez de select direto na tabela
+            const { data, error } = await supabaseClient.rpc('get_leaderboard');
 
             if (error) {
                 console.error('Erro ao buscar lances:', error);
@@ -334,7 +339,7 @@
         function updateUI(bids) {
             leaderboardBody.innerHTML = '';
             
-            if (bids.length === 0) {
+            if (!bids || bids.length === 0) {
                 currentMaxBid = 0;
                 highestBidDisplay.innerText = currencyFormatter.format(0);
                 leaderboardBody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhum lance registrado ainda. Seja o primeiro!</td></tr>`;
@@ -343,25 +348,23 @@
                 return;
             }
 
-            // Update Max Bid
             currentMaxBid = parseFloat(bids[0].amount);
             highestBidDisplay.innerText = currencyFormatter.format(currentMaxBid);
             
-           // Regra: Novo lance deve ser pelo menos 50 reais maior que o atual (ou 500 se for o primeiro)
             const nextMinBid = currentMaxBid + 50;
             minBidMsg.innerText = `Lance mínimo atual: ${currencyFormatter.format(nextMinBid)}`;
             amountInput.min = nextMinBid;
             amountInput.placeholder = nextMinBid.toFixed(2);
 
-            // Populate Table
             bids.forEach((bid, index) => {
                 const rowClass = index === 0 ? "bg-brand-primary/10" : "";
                 const trophy = index === 0 ? '<i class="fas fa-trophy text-yellow-400 mr-2"></i>' : '';
                 
+                // Nota: Agora usamos 'bid.masked_user' que vem do RPC, não mais bid.email
                 const html = `
                     <tr class="${rowClass} hover:bg-white/5 transition">
                         <td class="px-6 py-4 font-medium text-gray-300">
-                            ${trophy} ${maskEmail(bid.email)}
+                            ${trophy} ${bid.masked_user}
                         </td>
                         <td class="px-6 py-4 text-gray-400 text-sm">
                             ${dateFormatter.format(new Date(bid.created_at))}
@@ -375,7 +378,6 @@
             });
         }
 
-        // --- SUBMIT HANDLE ---
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -384,11 +386,11 @@
                 return;
             }
 
-
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
             const amount = parseFloat(document.getElementById('amount').value);
             const minRequired = currentMaxBid > 0 ? currentMaxBid + 50 : MINIMUM_BID_START;
 
-            // Client Validation
             if (amount < minRequired) {
                 showFeedback(`O lance precisa ser maior que ${currencyFormatter.format(minRequired - 0.01)}`, 'error');
                 return;
@@ -399,7 +401,7 @@
 
             const { data, error } = await supabaseClient
                 .from('bids')
-                .insert([{ amount }]);
+                .insert([{ name, email, amount }]);
 
             if (error) {
                 showFeedback('Erro ao registrar lance: ' + error.message, 'error');
@@ -410,7 +412,9 @@
                 form.reset();
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'REGISTRAR LANCE OFICIAL';
-                fetchBids(); // Refresh imediato
+                
+                // Atualiza a lista imediatamente
+                fetchBids(); 
             }
         });
 
@@ -425,26 +429,18 @@
         if (supabaseClient) {
             fetchBids();
             
-            // Realtime Update Subscription
-            supabaseClient.channel('custom-all-channel')
-            .on(
-                'postgres_changes',
-                { event: 'INSERT', schema: 'public', table: 'bids' },
-                (payload) => {
-                    console.log('Novo lance detectado!', payload);
-                    fetchBids(); // Recarrega a tabela quando alguém dá um lance
-                }
-            )
-            .subscribe();
+            // Auto-refresh (Polling) a cada 10 segundos
+            // Necessário pois bloqueamos a leitura direta da tabela, 
+            // o que pode impedir eventos Realtime dependendo da config.
+            setInterval(fetchBids, 10000);
+            
         } else {
-            // Mock data for preview purpose if Supabase not configured
             leaderboardBody.innerHTML = `
                 <tr><td colspan="3" class="px-6 py-4 text-center text-yellow-500">
                     <i class="fas fa-exclamation-triangle"></i> Configure as chaves do Supabase no código (Linha 280)
                 </td></tr>
             `;
         }
-
     </script>
 </body>
 </html>
