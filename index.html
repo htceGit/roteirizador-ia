@@ -1,446 +1,478 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leilão de Domínio Premium - Roteirizador.ia.br</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            dark: '#0f172a',
-                            primary: '#2563eb',
-                            accent: '#00dc82', // Verde neon IA
-                            danger: '#ef4444'
-                        }
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
-                }
+    <title>Domínios Premium .ia.br - HTCE.Tech</title>
+    <meta name="description"
+        content="Garanta o seu domínio .ia.br premium com a HTCE.Tech. O futuro da Inteligência Artificial no Brasil começa aqui.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #f8fafc;
+            --accent-primary: #2563eb;
+            --accent-secondary: #06b6d4;
+            --accent-whatsapp: #25D366;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-border: rgba(148, 163, 184, 0.2);
+            --font-main: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            top: -20vw;
+            left: -20vw;
+            z-index: -1;
+            filter: blur(60px);
+            animation: float 15s ease-in-out infinite alternate;
+        }
+
+        .bg-glow:nth-child(2) {
+            top: 40vw;
+            left: 50vw;
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            animation-duration: 20s;
+            animation-direction: alternate-reverse;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                transform: translateY(50px) scale(1.1);
             }
         }
-    </script>
-    <style>
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4rem 5% 2rem;
         }
-        .gradient-text {
-            background: linear-gradient(to right, #3b82f6, #00dc82);
+
+        .logo-top {
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-top span {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        .hero {
+            text-align: center;
+            max-width: 850px;
+            margin-bottom: 3rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.4rem;
+            background: white;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            border-radius: 50px;
+            color: var(--accent-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 12px rgba(37, 99, 235, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1.5px;
+            color: var(--text-main);
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+            margin: 2rem 0;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            width: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .domain-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .domain-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .domain-name {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            word-break: break-all;
+        }
+
+        .domain-status {
+            font-size: 0.95rem;
+            color: #10b981;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .status-dot-green {
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            gap: 0.6rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-whatsapp {
+            background-color: var(--accent-whatsapp);
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #1ea952;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.2);
+        }
+
+        .btn-email {
+            background-color: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-email:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-copy {
+            background-color: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-copy:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 2rem;
+            background: var(--text-main);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transform: translateY(100px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .copy-toast.show {
+            transform: translateY(0);
+        }
+
+        footer {
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+            margin-top: auto;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            background: #ffffff;
+        }
+
+        footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
     </style>
 </head>
-<body class="bg-brand-dark text-white font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Navbar -->
-    <nav class="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-2xl font-bold tracking-tighter">
-                        roteirizador<span class="text-brand-accent">.ia.br</span>
-                    </span>
-                </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#leilao" class="bg-brand-primary hover:bg-blue-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">Dar Lance Agora</a>
-                    </div>
-                </div>
+<body>
+    <div class="bg-glow"></div>
+    <div class="bg-glow"></div>
+
+    <main>
+        <a href="https://www.htce.com.br" class="logo-top" target="_blank" rel="noopener noreferrer">
+            HTCE<span>.Tech</span>
+        </a>
+
+        <section class="hero">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                Inovação em IA
+            </div>
+            <h1>O futuro é <span>.ia.br</span></h1>
+            <p>Garanta domínios exclusivos para sua próxima revolução tecnológica.</p>
+        </section>
+
+        <!-- Carousel -->
+        <div class="carousel-container">
+            <div class="carousel-track" id="carousel-track">
+                <!-- Slides will be injected here -->
             </div>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <main class="flex-grow pt-24 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                
-                <!-- Left Column: Value Prop -->
-                <div>
-                    <div class="inline-flex items-center px-3 py-1 rounded-full border border-brand-accent/30 bg-brand-accent/10 text-brand-accent text-sm font-semibold mb-6">
-                        <i class="fas fa-gavel mr-2"></i> Leilão Oficial em Andamento
-                    </div>
-                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-                        O Domínio Definitivo para <br>
-                        <span class="gradient-text">Logística & IA</span>
-                    </h1>
-                    <p class="text-gray-400 text-lg mb-8 leading-relaxed">
-                        Garanta autoridade instantânea no mercado brasileiro de transportes. 
-                        <strong>roteirizador.ia.br</strong> combina a palavra-chave mais buscada do setor com a extensão tecnológica do momento.
-                    </p>
-                    
-                    <ul class="space-y-4 mb-8">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-brand-accent mt-1 mr-3"></i>
-                            <div>
-                                <strong class="block text-white">Autoridade SEO</strong>
-                                <span class="text-gray-400 text-sm">Posicione-se organicamente para termos de alto custo por clique.</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-brand-accent mt-1 mr-3"></i>
-                            <div>
-                                <strong class="block text-white">Identidade Premium</strong>
-                                <span class="text-gray-400 text-sm">Ideal para SaaS, Startups e Transportadoras inovadoras.</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-brand-accent mt-1 mr-3"></i>
-                            <div>
-                                <strong class="block text-white">Extensão .IA.BR</strong>
-                                <span class="text-gray-400 text-sm">Demonstre inovação e foco em Inteligência Artificial.</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Right Column: Auction System -->
-                <div id="leilao" class="glass-panel rounded-2xl p-6 md:p-8 shadow-2xl shadow-brand-primary/20 relative overflow-hidden">
-                    <!-- Status Badge -->
-                    <div class="absolute top-4 right-4">
-                        <span id="status-badge" class="flex items-center px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30 animate-pulse">
-                            <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span> AO VIVO
-                        </span>
-                    </div>
-
-                    <!-- Countdown Compacto com Barra de Progresso -->
-                    <div class="mb-6 p-4 bg-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tempo Restante</span>
-                            <span class="text-[10px] text-brand-accent font-mono bg-brand-accent/10 px-2 py-0.5 rounded border border-brand-accent/20">
-                                <i class="far fa-clock mr-1"></i>01 MAR '26 - 16h
-                            </span>
-                        </div>
-                        
-                        <div id="countdown" class="grid grid-cols-4 gap-2 text-center mb-4">
-                            <!-- Compact units -->
-                            <div class="bg-gray-900 rounded-lg p-2 border border-gray-700/50 flex flex-col justify-center">
-                                <span class="block text-lg md:text-xl font-bold font-mono leading-none text-white" id="days">00</span>
-                                <span class="text-[8px] text-gray-500 uppercase mt-1 tracking-wider">Dias</span>
-                            </div>
-                            <div class="bg-gray-900 rounded-lg p-2 border border-gray-700/50 flex flex-col justify-center">
-                                <span class="block text-lg md:text-xl font-bold font-mono leading-none text-white" id="hours">00</span>
-                                <span class="text-[8px] text-gray-500 uppercase mt-1 tracking-wider">Hrs</span>
-                            </div>
-                            <div class="bg-gray-900 rounded-lg p-2 border border-gray-700/50 flex flex-col justify-center">
-                                <span class="block text-lg md:text-xl font-bold font-mono leading-none text-white" id="minutes">00</span>
-                                <span class="text-[8px] text-gray-500 uppercase mt-1 tracking-wider">Min</span>
-                            </div>
-                            <div class="bg-gray-900 rounded-lg p-2 border border-gray-700/50 flex flex-col justify-center relative overflow-hidden">
-                                <span class="block text-lg md:text-xl font-bold font-mono text-brand-accent leading-none relative z-10" id="seconds">00</span>
-                                <span class="text-[8px] text-gray-500 uppercase mt-1 tracking-wider relative z-10">Seg</span>
-                                <div class="absolute inset-0 bg-brand-accent/5 z-0"></div>
-                            </div>
-                        </div>
-
-                        <!-- Progress Bar Container -->
-                        <div class="relative pt-1">
-                            <div class="flex mb-1 items-center justify-between text-[9px] text-gray-500 font-mono opacity-80">
-                                <span>01 JAN</span>
-                                <span class="text-right">01 MAR</span>
-                            </div>
-                            <div class="overflow-hidden h-1.5 mb-1 text-xs flex rounded-full bg-gray-900 border border-gray-700">
-                                <div id="progress-bar" style="width:0%" class="shadow-[0_0_10px_rgba(37,99,235,0.5)] flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-brand-primary to-brand-accent transition-all duration-1000 ease-linear"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Current Highest Bid -->
-                    <div class="bg-brand-primary/10 border border-brand-primary/30 rounded-xl p-4 text-center mb-6">
-                        <p class="text-brand-primary text-sm font-bold uppercase">Lance Atual Mais Alto</p>
-                        <h2 id="highest-bid-display" class="text-4xl font-bold text-white mt-1">R$ 0,00</h2>
-                    </div>
-
-                    <!-- Bidding Form -->
-                    <form id="bid-form" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-1">Seu Nome</label>
-                            <input type="text" id="name" required class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition" placeholder="Nome da Empresa ou Pessoa">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-1">E-mail Profissional</label>
-                            <input type="email" id="email" required class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition" placeholder="contato@empresa.com.br">
-                            <p class="text-xs text-gray-500 mt-1">Necessário para validação do lance.</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-1">Valor do Lance (R$)</label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-3 text-gray-400">R$</span>
-                                <input type="number" id="amount" required step="50" min="500" class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition font-mono text-lg" placeholder="500.00">
-                            </div>
-                            <p id="min-bid-msg" class="text-xs text-gray-500 mt-1">Lance mínimo: R$ 500,00</p>
-                        </div>
-
-                        <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-brand-primary to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-4 rounded-lg shadow-lg transform transition hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                            REGISTRAR LANCE OFICIAL
-                        </button>
-                    </form>
-
-                    <!-- Feedback Messages -->
-                    <div id="feedback" class="mt-4 text-center text-sm hidden"></div>
-                </div>
-            </div>
-
-            <!-- Live Feed / Leaderboard -->
-            <div class="mt-20 max-w-3xl mx-auto">
-                <h3 class="text-xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-list-ol text-brand-accent mr-3"></i> Top 5 Maiores Lances
-                </h3>
-                <div class="bg-gray-800/40 rounded-xl overflow-hidden border border-gray-700">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-gray-900/50 text-gray-400 text-xs uppercase">
-                                <tr>
-                                    <th class="px-6 py-4">Usuário</th>
-                                    <th class="px-6 py-4">Data</th>
-                                    <th class="px-6 py-4 text-right">Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaderboard-body" class="divide-y divide-gray-700/50">
-                                <!-- Lances serão inseridos aqui via JS -->
-                                <tr>
-                                    <td colspan="3" class="px-6 py-8 text-center text-gray-500 italic">
-                                        Carregando lances...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <p class="text-center text-xs text-gray-500 mt-4">
-                    * Os e-mails são protegidos e mascarados diretamente no servidor.
-                </p>
-            </div>
+        <!-- Call to Action -->
+        <div class="contact-grid">
+            <a href="https://wa.me/5547999891503" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                    </path>
+                </svg>
+                Entre em contato (WhatsApp)
+            </a>
+            <button id="btn-copy-email" class="btn btn-copy">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                Copiar e-mail
+            </button>
+            <a href="mailto:dominios@htce.com.br" class="btn btn-email">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                Enviar proposta
+            </a>
         </div>
     </main>
 
-    <footer class="border-t border-gray-800 bg-gray-900 py-10">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-gray-500 text-sm">
-                &copy; 2025 Roteirizador.ia.br. Todos os direitos reservados.
-            </p>
-            <p class="text-gray-600 text-xs mt-2">
-                Este site é uma plataforma de venda de domínio. O pagamento será intermediado por plataforma segura (Escrow) após o encerramento do leilão.
-            </p>
-        </div>
+    <div id="copy-toast" class="copy-toast">E-mail copiado para a área de transferência!</div>
+
+    <footer>
+        <p>&copy; <span id="year"></span> <a href="https://www.htce.com.br" target="_blank"
+                rel="noopener noreferrer">HTCE.Tech</a>. Todos os direitos reservados.</p>
     </footer>
 
-    <!-- Logic Script -->
     <script>
-        // --- CONFIGURAÇÃO SUPABASE ---
-        // IMPORTANTE: Substitua pelas suas chaves reais do Supabase
-        const SUPABASE_URL = 'https://fipjivizuuuhlzpcewzw.supabase.co'; 
-        const SUPABASE_KEY = 'sb_publishable_2YSikUkRJnroTR1XKCMG1A_y574et2s';
-        
-        let supabaseClient;
+        const dominiosAVenda = [
+            "barato.ia.br",
+            "buscas.ia.br",
+            "cargas.ia.br",
+            "dental.ia.br",
+            "despesas.ia.br",
+            "destinos.ia.br",
+            "digitaliza.ia.br",
+            "festas.ia.br",
+            "navegador.ia.br",
+            "olimpiadas.ia.br",
+            "phone.ia.br",
+            "postos.ia.br",
+            "rastrear.ia.br",
+            "roteirizador.ia.br"
+        ];
 
-        try {
-            if(SUPABASE_URL === 'SUA_URL_SUPABASE_AQUI') {
-                console.warn("Configure as chaves do Supabase no código HTML.");
-            } else {
-                if (window.supabase) {
-                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                } else {
-                    console.error("Biblioteca Supabase não carregou corretamente.");
-                }
-            }
-        } catch(e) {
-            console.error("Erro ao iniciar Supabase", e);
-        }
+        const track = document.getElementById('carousel-track');
+        let currentIndex = 0;
 
-        // --- CONFIGURAÇÃO LEILÃO ---
-        const auctionStartDate = new Date('January 01, 2026 00:00:00').getTime();
-        const auctionEndDate = new Date('March 01, 2026 16:00:00').getTime(); 
-        const MINIMUM_BID_START = 500;
-        let currentMaxBid = 0;
-
-        // Elementos DOM
-        const form = document.getElementById('bid-form');
-        const submitBtn = document.getElementById('submit-btn');
-        const feedback = document.getElementById('feedback');
-        const leaderboardBody = document.getElementById('leaderboard-body');
-        const highestBidDisplay = document.getElementById('highest-bid-display');
-        const minBidMsg = document.getElementById('min-bid-msg');
-        const amountInput = document.getElementById('amount');
-        const progressBar = document.getElementById('progress-bar');
-
-        // --- FORMATADORES ---
-        const currencyFormatter = new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        });
-
-        const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
-            day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
-        });
-
-        // --- COUNTDOWN E PROGRESS BAR ---
-        const countdownTimer = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = auctionEndDate - now;
-            const totalDuration = auctionEndDate - auctionStartDate;
-            const elapsed = now - auctionStartDate;
-            let percentage = (elapsed / totalDuration) * 100;
-            
-            percentage = Math.max(0, Math.min(100, percentage));
-            if (progressBar) {
-                progressBar.style.width = percentage + "%";
-            }
-
-            if (distance < 0) {
-                clearInterval(countdownTimer);
-                document.getElementById("status-badge").innerHTML = "ENCERRADO";
-                document.getElementById("status-badge").className = "flex items-center px-3 py-1 rounded-full bg-gray-700 text-gray-300 text-xs font-bold border border-gray-600";
-                form.innerHTML = '<div class="text-center p-6 bg-gray-800 rounded text-gray-300">O leilão foi encerrado.</div>';
-                
-                ['days', 'hours', 'minutes', 'seconds'].forEach(id => document.getElementById(id).innerText = "00");
-                if (progressBar) progressBar.style.width = "100%";
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-        }, 1000);
-
-        // --- SUPABASE LOGIC (SECURE) ---
-
-        async function fetchBids() {
-            if (!supabaseClient) return;
-
-            // Mudança: Chamada RPC em vez de select direto na tabela
-            const { data, error } = await supabaseClient.rpc('get_leaderboard');
-
-            if (error) {
-                console.error('Erro ao buscar lances:', error);
-                return;
-            }
-
-            updateUI(data);
-        }
-
-        function updateUI(bids) {
-            leaderboardBody.innerHTML = '';
-            
-            if (!bids || bids.length === 0) {
-                currentMaxBid = 0;
-                highestBidDisplay.innerText = currencyFormatter.format(0);
-                leaderboardBody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhum lance registrado ainda. Seja o primeiro!</td></tr>`;
-                minBidMsg.innerText = `Lance mínimo: ${currencyFormatter.format(MINIMUM_BID_START)}`;
-                amountInput.min = MINIMUM_BID_START;
-                return;
-            }
-
-            currentMaxBid = parseFloat(bids[0].amount);
-            highestBidDisplay.innerText = currencyFormatter.format(currentMaxBid);
-            
-            const nextMinBid = currentMaxBid + 50;
-            minBidMsg.innerText = `Lance mínimo atual: ${currencyFormatter.format(nextMinBid)}`;
-            amountInput.min = nextMinBid;
-            amountInput.placeholder = nextMinBid.toFixed(2);
-
-            bids.forEach((bid, index) => {
-                const rowClass = index === 0 ? "bg-brand-primary/10" : "";
-                const trophy = index === 0 ? '<i class="fas fa-trophy text-yellow-400 mr-2"></i>' : '';
-                
-                // Nota: Agora usamos 'bid.masked_user' que vem do RPC, não mais bid.email
-                const html = `
-                    <tr class="${rowClass} hover:bg-white/5 transition">
-                        <td class="px-6 py-4 font-medium text-gray-300">
-                            ${trophy} ${bid.masked_user}
-                        </td>
-                        <td class="px-6 py-4 text-gray-400 text-sm">
-                            ${dateFormatter.format(new Date(bid.created_at))}
-                        </td>
-                        <td class="px-6 py-4 text-right font-bold text-white font-mono">
-                            ${currencyFormatter.format(bid.amount)}
-                        </td>
-                    </tr>
+        // Render Slides
+        function initCarousel() {
+            dominiosAVenda.forEach(domain => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `
+                    <div class="domain-card">
+                        <div class="domain-name">${domain}</div>
+                        <div class="domain-status">
+                            <span class="status-dot-green"></span> Disponível para proposta
+                        </div>
+                    </div>
                 `;
-                leaderboardBody.innerHTML += html;
+                track.appendChild(slide);
             });
+
+            // Auto Play
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % dominiosAVenda.length;
+                updateCarousel();
+            }, 1000); // 1 second as requested
         }
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!supabaseClient) {
-                alert("Configure o Supabase no código para funcionar.");
-                return;
-            }
+        function updateCarousel() {
+            const offset = -currentIndex * 100;
+            track.style.transform = `translateX(${offset}%)`;
+        }
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const minRequired = currentMaxBid > 0 ? currentMaxBid + 50 : MINIMUM_BID_START;
+        // Copy Email Logic
+        const copyBtn = document.getElementById('btn-copy-email');
+        const toast = document.getElementById('copy-toast');
+        const emailToCopy = 'dominios@htce.com.br';
 
-            if (amount < minRequired) {
-                showFeedback(`O lance precisa ser maior que ${currencyFormatter.format(minRequired - 0.01)}`, 'error');
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processando...';
-
-            const { data, error } = await supabaseClient
-                .from('bids')
-                .insert([{ name, email, amount }]);
-
-            if (error) {
-                showFeedback('Erro ao registrar lance: ' + error.message, 'error');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'REGISTRAR LANCE OFICIAL';
-            } else {
-                showFeedback('Lance registrado com sucesso!', 'success');
-                form.reset();
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'REGISTRAR LANCE OFICIAL';
-                
-                // Atualiza a lista imediatamente
-                fetchBids(); 
-            }
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(emailToCopy).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            });
         });
 
-        function showFeedback(msg, type) {
-            feedback.innerText = msg;
-            feedback.classList.remove('hidden', 'text-green-400', 'text-red-400');
-            feedback.classList.add(type === 'success' ? 'text-green-400' : 'text-red-400');
-            setTimeout(() => feedback.classList.add('hidden'), 5000);
-        }
-
-        // --- INIT ---
-        if (supabaseClient) {
-            fetchBids();
-            
-            // Auto-refresh (Polling) a cada 10 segundos
-            // Necessário pois bloqueamos a leitura direta da tabela, 
-            // o que pode impedir eventos Realtime dependendo da config.
-            setInterval(fetchBids, 10000);
-            
-        } else {
-            leaderboardBody.innerHTML = `
-                <tr><td colspan="3" class="px-6 py-4 text-center text-yellow-500">
-                    <i class="fas fa-exclamation-triangle"></i> Configure as chaves do Supabase no código (Linha 280)
-                </td></tr>
-            `;
-        }
+        document.getElementById('year').textContent = new Date().getFullYear();
+        document.addEventListener('DOMContentLoaded', initCarousel);
     </script>
 </body>
+
 </html>
